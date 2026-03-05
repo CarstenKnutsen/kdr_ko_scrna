@@ -47,6 +47,7 @@ gene_dict = {
             "Aard",
             "Pdgfrb",
             "Notch3",
+            "Eln","Eng",
             "Dcn",
             "Cox4i2",
             "Higd1b",
@@ -161,119 +162,195 @@ gene_dict = {
             'Dnah12',
             'Spag17',
             'Muc5b',
+            'Krt8',
+            'Krt18',
+            "Ascl1",
+            "Calca",
+            "Grp",
+            "Nrxn1",
+            "Ascl2",
+            "Pou2f3",
+            "Il23a",
+            "Foxi1",
+            "Ascl3",
+            "Cftr",
+            "Trp63",  # MGI-approved mouse symbol (not Tp63)
+            "Krt5",
+            "Ngfr",
+            "Scgb1a1",
+            "Scube2",
+            "Bpifb1",
+            "Lcn2",
+            "Tspan8",
+            "Scgb3a2",
+            "Klk11",
+            "Mgp",
+            "Sox4",
+            "Muc5ac",
+            "Spdef",
+            "Pcdh7",
+            "Slc4a11",
+            "Agr2",
+            "Muc5b",
+            "Bpifb2",
+            "Lyz2",  # Mouse lysozyme (not LYZ)
+            "Ltf",
+            "Lpo",
+            "Krt14",
+            "Epcam",
+            "Myh11",
+            "Foxj1",
+            "Rsph1",
+            "Cdhr3",
+            "Cdhr4",
+            "Deup1",
+            "Foxn4",
+            "Cdc20b",
+            "Sox9",
+            "Aldh1a3",
+            "Mia1",  # Mouse gene is Mia1
+            "Rarres1",
+            "Krt19",
+            "Serpinb4a",  # Mouse ortholog of human SERPINB4
+            "Notch3",
+            "Ager",
+            "Rtkn2",
+            "Sema3b",
+            "Lamp3",
+            "Abca3",
+            "Kcnj15",
 
         ],
     }
 leiden_ct_dict = {
+    # "Mesenchymal": {
+    #     "0": "Alveolar myofibroblast",
+    #     "1": "Adventitial fibroblast",
+    #     "2": "Alveolar fibroblast",
+    #     "3": "Alveolar fibroblast",
+    #     "4": "Alveolar fibroblast",
+    #     "5": "Ductal myofibroblast",
+    #     "6": "Alveolar fibroblast",
+    #     "7": "Pericyte",
+    #     "8": "Ductal myofibroblast",
+    #     "9": "Adventitial fibroblast",
+    #     "10": "Alveolar myofibroblast",
+    #     "11": "Ductal myofibroblast",
+    #     "12": "Mesothelial",
+    #     "13": "Vascular smooth muscle",
+    #     "14": "Proliferating myofibroblast",
+    #     "15": "Adventitial fibroblast",
+    #     "16": "doublet-endo",
+    #     "17": "Airway smooth muscle",
+    #     "18": "doublet-endo",
+    #     "19": "Proliferating fibroblast",
+    #     "20": "doublet-endo",
+    #     "21": "Proliferating mural",
+    # "22": "doublet-endo",
+    # "23": "Vascular smooth muscle",
+    # },
     "Mesenchymal": {
-        # "0": "Alveolar fibroblast", ## If excluding cluster 11
-        # "1": "Mesothelial",
-        # "2": "Alveolar fibroblast",
-        # "3": "Alveolar fibroblast",
-        # "4": "Alveolar fibroblast",
-        # "5": "Airway smooth muscle",
-        # "6": "Alveolar fibroblast",
-        # "7": "Vascular smooth muscle",
-        # "8": "Myofibroblast",
-        # "9":"Myofibroblast",
-        # "10": "Pericyte",
-        # "11": "Adventitial fibroblast",
-        # "12": "Myofibroblast",
-        # "13": "Pericyte",
-        # "14": "Proliferating myofibroblast",
-        # "15": "low-quality Zbtb",
-        # "16": "Mesothelial",
-        # "17": "Striated muscle",
-        # "18": "Proliferating pericyte",
-        # "19": "low-quality Zbtb",
-        # "20": "Striated muscle",
-        # "21": "Proliferating pericyte",
-        # "22": "low-quality Zbtb",
         "0": "Alveolar fibroblast",
-        "1": "Alveolar fibroblast",
-        "2": "Mural",
-        "3": "Mesothelial",
-        "4": "Alveolar fibroblast",
-        "5": "Alveolar fibroblast",
+        "1": "Adventitial fibroblast",
+        "2": "Alveolar fibroblast",
+        "3": "Ductal myofibroblast",
+        "4": "Ductal myofibroblast",
+        "5": "Alveolar myofibroblast",
         "6": "Alveolar fibroblast",
-        "7": "Myofibroblast",
-        "8": "Airway smooth muscle",
-        "9": "Myofibroblast",
-        "10": "doublet-Alveolar fibroblast",
-        "11": "Proliferating fibroblast",
-        "12": "doublet-Myofibroblast",
-        "13": "doublet=Alveolar fibroblast",
-        "14": "Mural",
-        "15": "Myofibroblast",
-        "16": "doublet-endo",
-        "17": "low-quality-zbtb16",
+        "7": "Alveolar myofibroblast",
+        "8": "Alveolar myofibroblast",
+        "9": "Pericyte",
+        "10": "Alveolar fibroblast",
+        "11": "Vascular smooth muscle",
+        "12": "Mesothelial",
+        "13": "Vascular smooth muscle",
+        "14": "Alveolar fibroblast",
+        "15": "Pericyte",
+        "16": "Vascular smooth muscle",
+        "17": "Proliferating myofibroblast",
         "18": "Adventitial fibroblast",
-        "19": "Striated muscle",
-        "20": "Mesothelial",
-        "21": "low-quality Zbtb",
+        "19": "doublet-Pericyte_endo",
+        "20": "doublet-myofibroblast_endo",
+        "21": "Pericyte",
+        "22": "Airway smooth muscle",
+        "23": "Proliferating fibroblast",
+        "24": "Proliferating mural",
+        "25": "doublet-Adventitial fibroblast_endo",
+        "26": "doublet-Alveolar fibroblast_endo",
     },
     "Endothelial": {
         "0": "Cap1",
         "1": "Cap1",
-        "2": "Cap1",
-        "3": "Cap2",
-        "4": "Cap1_Cap2",
-        "5": "Proliferating EC",
-        "6": "Arterial EC",
-        "7": "Cap1_Cap2",
-        "8": "Cap1",
-        "9":  "Venous EC",
-        "10": "Lymphatic EC",
+        "2": "Cap2",
+        "3": "Cap1",
+        "4": "Cap1",
+        "5": "Cap1_Cap2",
+        "6": "Cap1",
+        "7": "Prolfierating EC",
+        "8": "Arterial EC",
+        "9":  "Cap1_Cap2",
+        "10": "Venous EC",
+        "11": "Cap1_Cap2",
+        "12": "Cap2",
+        "13": "Lymphatic EC",
+        "14": "Systemic Venous EC",
+        "15": "doublet-epi",
     },
     "Immune": {
-        "0": "Alveolar macrophage",
-        "1": "low-quality Alveolar macrophage",
-        "2": "Alveolar macrophage",
+        "0": "Basophil",
+        "1": "Alveolar macrophage",
+        "2": "B cell",
         "3": "B cell",
-        "4": "Alveolar macrophage",
+        "4": "Basophil",
         "5": "Monocyte",
-        "6": "T cell",
-        "7": "Interstitial macrophage",
-        "8": "Proliferating macrophage",
-        "9":"Alveolar macrophage",
-        "10":  "doublet-endo",
-        "11": "doublet-epi",
-        "12": "doublet-mese",
+        "6": "B cell",
+        "7": "mig-DC",
+        "8": "doublet",
+        "9":"Proliferating monocyte",
+        "10":  "Monocyte",
+        "11": "T cell",
+        "12": "Neutrophil",
         "13": "doublet",
-        "14": "doublet-epi",
-        "15": "Neutrophil",
-        "16": "doublet-endo",
-        "17": "c-Dendritic cell",
-        "18": "mig Dendritic cell",
+        "14": "Proliferating Alveolar macrophage",
+
 
     },
     "Epithelial": {
-        "0": "AT2",
-        "1": "AT1",
-        "2": "AT1",
+        "0": "AT1",
+        "1": "AT2",
+        "2": "AT2",
         "3": "AT2",
-        "4": "Club",
-        "5": "AT2",
+        "4": "AT2",
+        "5": "AT1",
         "6": "AT1",
         "7": "Ciliated",
-        "8": "AT2",
-        "9": "Club",
-        "10": "Goblet",
-        "11": "Club",
-        "12": "Proliferating club",
-        "13": "Proliferating AT2",
-        "14": "Neuroendocrine",
+        "8": "doublet-endo",
+        "9": "doublet-endo",
+        "10": "doublet-endo",
+        "11": "AT1",
+        "12": "Neuroendocrine_Other_Epithelial",
+        "13": "AT1_AT2",
+        "14": "Proliferating AT2",
+        "15": "doublet-endo",
+        "16": "Club",
+        "17": "doublet-mese",
+        "18": "doublet-endo",
 
     },
 
 }
 if __name__ == "__main__":
+    # adata = sc.read(
+    #     f"{data}/{adata_name}_filtered_embed_clean.gz.h5ad",
+    # )
     adata = sc.read(
-        f"{data}/{adata_name}_filtered_embed_clean.gz.h5ad",
+        f"{data}/{adata_name}_filtered_embed_cleaned.gz.h5ad",
     )
     print(adata)
     adata.obs["Cell Subtype"] = pd.Series(index=adata.obs.index, data=None, dtype="str")
     for lineage in adata.obs['Lineage'].cat.categories:
+    # for lineage in ['Mesenchymal']:
+        gene_ls = [x for x in gene_dict[lineage.lower()] if x in adata.var_names]
         figures_lin = f"data/figures/cell_typing/{lineage}"
         os.makedirs(figures_lin, exist_ok=True)
         sc.settings.figdir = figures_lin
@@ -282,7 +359,10 @@ if __name__ == "__main__":
         sc.pp.highly_variable_genes(lin_adata, batch_key="Library")
         sc.pp.pca(lin_adata, mask_var="highly_variable")
         sc.pp.neighbors(lin_adata, use_rep="X_pca")
-        sc.tl.leiden(lin_adata, key_added=f"leiden_{lineage}", resolution=1)
+        if lineage=='Mesenchymal':
+            sc.tl.leiden(lin_adata, key_added=f"leiden_{lineage}", resolution=1.2)
+        else:
+            sc.tl.leiden(lin_adata, key_added=f"leiden_{lineage}", resolution=1)
         sc.tl.umap(lin_adata,min_dist=0.5)
         sc.tl.rank_genes_groups(lin_adata, groupby=f"leiden_{lineage}",method='wilcoxon',pts=True)
         sc.tl.dendrogram(lin_adata,f"leiden_{lineage}")
@@ -303,8 +383,8 @@ if __name__ == "__main__":
         sc.pl.umap(lin_adata, color = ['leiden',f"leiden_{lineage}",'Library',
                                        'celltype_rough'
                                        ],wspace=0.5,show=False,save='_pretrim_leiden')
-        sc.pl.dotplot(lin_adata,gene_dict[lineage.lower()],groupby=f"leiden_{lineage}",show=False,save='useful_genes_leiden')
-        sc.pl.umap(lin_adata, color = gene_dict[lineage.lower()],wspace=0.5,show=False,save='_pretrim_genes')
+        sc.pl.dotplot(lin_adata,gene_ls,groupby=f"leiden_{lineage}",show=False,save='useful_genes_leiden')
+        sc.pl.umap(lin_adata, color = gene_ls,wspace=0.5,show=False,save='_pretrim_genes')
         sc.pl.umap(lin_adata, color = ['log1p_total_umis','log1p_n_genes_by_umis','ambient_score','doublet_score'],wspace=0.5,show=False,save='_pretrim_qc')
         if lineage == 'Mesenchymal':
             weird_cells = {'striated_muscle': ['Ttn', 'Ryr2', 'Myh6', 'Tbx20', 'Ldb3'],
@@ -324,10 +404,10 @@ if __name__ == "__main__":
         else:
             sc.tl.umap(lin_adata, min_dist=0.5)
         sc.pl.umap(lin_adata, color = ['Treatment','Library','leiden',f"leiden_{lineage}",
-                                       # 'celltype_rough','Cell Subtype
+                                       'celltype_rough','Cell Subtype'
                                        ],wspace=0.5,show=False,save='_posttrim_leiden')
-        sc.pl.dotplot(lin_adata,gene_dict[lineage.lower()],groupby="Cell Subtype",show=False,save='useful_genes_celltype')
-        sc.pl.umap(lin_adata, color = gene_dict[lineage.lower()],wspace=0.5,show=False,save='_posttrim_genes')
+        sc.pl.dotplot(lin_adata,gene_ls,groupby="Cell Subtype",show=False,save='useful_genes_celltype')
+        sc.pl.umap(lin_adata, color = gene_ls,wspace=0.5,show=False,save='_posttrim_genes')
         sc.pl.umap(lin_adata, color = ['log1p_total_umis','log1p_n_genes_by_umis','ambient_score','doublet_score'],wspace=0.5,show=False,save='_posttrim_qc')
         sc.tl.rank_genes_groups(lin_adata, groupby="Cell Subtype", method='wilcoxon', pts=True)
         sc.tl.dendrogram(lin_adata,"Cell Subtype")
@@ -373,7 +453,7 @@ if __name__ == "__main__":
         with pd.ExcelWriter(
             f"{figures_lin}/metadata_counts.xlsx", engine="xlsxwriter"
         ) as writer:
-            obs_list = ["Library", "leiden", "celltype_rough"]
+            obs_list = ["Library", f"leiden_{lineage}","Cell Subtype"]
             num_obs = len(obs_list) + 1
             for ind in range(0, num_obs):
                 for subset in itertools.combinations(obs_list, ind):
@@ -387,35 +467,35 @@ if __name__ == "__main__":
                             lin_adata.obs.groupby(subset[:-1])[subset[-1]].value_counts(
                                 normalize=True
                             ).to_excel(writer, sheet_name=key[:31])
-    # adata = adata[~adata.obs['Cell Subtype'].isna()]
-    # ct_order = []
-    # for lin in adata.obs['Lineage'].cat.categories:
-    #     for ct in sorted(adata[adata.obs['Lineage'] == lin].obs['Cell Subtype'].unique()):
-    #         ct_order.append(ct)
-    # sc.tl.umap(adata,min_dist=0.5)
-    # adata.obs['Cell Subtype'] = pd.Categorical(adata.obs['Cell Subtype'], categories=ct_order)
-    # sc.settings.figdir = figures
-    # sc.pl.umap(adata,color='Cell Subtype',save='Cell_Subtype',show=False)
-    # plot_obs_abundance(adata, 'Cell Subtype', hue='Library', ordered=True,
-    #                    as_percentage=True, save=f"{figures}/celltype_abundance.png",hue_order=['N_WT','N_KO','H_WT','H_KO'])
-    # with pd.ExcelWriter(
-    #     f"{figures}/celltype_counts.xlsx", engine="xlsxwriter"
-    # ) as writer:
-    #     obs_list = ["Library", "Treatment", "Cell Subtype"]
-    #     num_obs = len(obs_list) + 1
-    #     for ind in range(0, num_obs):
-    #         for subset in itertools.combinations(obs_list, ind):
-    #             if len(subset) != 0:
-    #                 subset = list(subset)
-    #                 if len(subset) == 1:
-    #                     key = subset[0]
-    #                     adata.obs[key].value_counts().to_excel(writer, sheet_name=key)
-    #                 else:
-    #                     key = "_".join(subset)
-    #                     adata.obs.groupby(subset[:-1])[subset[-1]].value_counts(
-    #                         normalize=True
-    #                     ).to_excel(writer, sheet_name=key[:31])
-    # adata.write(
-    #     f"{data}/{adata_name}_celltyped.gz.h5ad", compression="gzip"
-    # )
+    adata = adata[~adata.obs['Cell Subtype'].isna()]
+    ct_order = []
+    for lin in adata.obs['Lineage'].cat.categories:
+        for ct in sorted(adata[adata.obs['Lineage'] == lin].obs['Cell Subtype'].unique()):
+            ct_order.append(ct)
+    sc.tl.umap(adata,min_dist=0.5)
+    adata.obs['Cell Subtype'] = pd.Categorical(adata.obs['Cell Subtype'], categories=ct_order)
+    sc.settings.figdir = figures
+    sc.pl.umap(adata,color='Cell Subtype',save='Cell_Subtype',show=False)
+    plot_obs_abundance(adata, 'Cell Subtype', hue='Library', ordered=True,
+                       as_percentage=True, save=f"{figures}/celltype_abundance.png",hue_order=['N_WT','N_KO','H_WT','H_KO'])
+    with pd.ExcelWriter(
+        f"{figures}/celltype_counts.xlsx", engine="xlsxwriter"
+    ) as writer:
+        obs_list = ["Library", "Treatment", "Cell Subtype"]
+        num_obs = len(obs_list) + 1
+        for ind in range(0, num_obs):
+            for subset in itertools.combinations(obs_list, ind):
+                if len(subset) != 0:
+                    subset = list(subset)
+                    if len(subset) == 1:
+                        key = subset[0]
+                        adata.obs[key].value_counts().to_excel(writer, sheet_name=key)
+                    else:
+                        key = "_".join(subset)
+                        adata.obs.groupby(subset[:-1])[subset[-1]].value_counts(
+                            normalize=True
+                        ).to_excel(writer, sheet_name=key[:31])
+    adata.write(
+        f"{data}/{adata_name}_celltyped.gz.h5ad", compression="gzip"
+    )
 

@@ -1,5 +1,5 @@
 """Goal:Initial analysis of P7 Kdr KO scRNAseq, creating h5ad, filtering, and embedding
-Date:250203
+Date:251029
 Author: Carsten Knutsen
 conda_env:vegfr2
 """
@@ -165,31 +165,31 @@ gene_dict = {
     }
 #leiden dictionary to assign cell types
 leiden_ct_dict = {
-    "0": "low-quality",
-    "1": "AT2",
-    "2": "Alveolar fibroblast",
-    "3": "Cap1",
-    "4": "AT1",
-    "5": "Alveolar macrophage",
-    "6": "Myofibroblast",
-    "7": "Ciliated",
-    "8": "Cap2",
-    "9": "Mural",
-    "10":  "Airway smooth muscle",
-    # "11":"doublet-Alveolar fibroblast", # proliferating cells are in here too
-    "11": "Alveolar fibroblast",
-
-    "12": "Myeloid",
-    "13": "Myeloid",
-    "14": "Club ",
-    "15": "low-quality zbtb16",
-    "16": "low-quality zbtb16",
-    "17": "low-quality zbtb16",
-    "18": "Proliferating EC",
-"19": "low-quality zbtb16",
-"20": "low-quality EC",
-"21": "Lymphatic EC",
-"22": "Neuroendocrine",
+    "0": "Cap1",
+    "1": "Cap2",
+    "2": "Cap1",
+    "3": "ASM_Myof",
+    "4": "Alveolar fibroblast",
+    "5": "low-quality mese",
+    "6": "Adventitial fibroblast",
+    "7": "AT2",
+    "8": "AT1",
+    "9": "Arterial EC",
+    "10":  "low-quality-mese",
+    "11": "Mural",
+    "12": "VSM",
+    "13": "doublet-endo_mes",
+    "14": "AT2 ",
+    "15": "Proliferating EC",
+    "16": "Venous EC",
+    "17": "Mesothelial",
+    "18": "low-quality",
+"19": "Immune",
+"20": "Lymphatic EC",
+"21": "Ciliated",
+"22": "Proliferating mese",
+"23": "Proliferating mese",
+"24": "Unknown",
 
 }
 def read_adata(folder):
@@ -210,114 +210,120 @@ def read_adata(folder):
     adata.var_names = adata.var['gene_id'].values
     return adata
 if __name__ == "__main__":
-    ## Here we are reading in cellranger outputs and concatentating together, adding some metadata for both cells in obs and genes in var
-    runs = os.listdir(input_data)
-    adatas = []
-    gtf = read_gtf(gtf_fn).to_pandas()
-    print(gtf.columns)
-    gene_name_dict = pd.Series(gtf['gene_name'].values, index=gtf['gene_id']).to_dict()
-    for x in gene_name_dict.keys():
-        if gene_name_dict[x] == '':
-            gene_name_dict[x] = x
-    ambient_dict = {}
-    for run in runs:
-        print(run)
-        folder = f"{input_data}/{run}"
-        ambient_df = pd.read_csv(f'{figures}/soupx/{run}_ambient_genes.txt', sep='\t', header=0, index_col=0)
-        ambient_dict[run] = ambient_df
-        adata = read_adata(folder)
-        adata2 = sc.read_10x_h5(f"data/single_cell_files/cellranger_output/{run}/outs/filtered_feature_bc_matrix.h5")
-        adata.layers['raw'] = adata2.X.copy()
-        adata.obs_names = run + "_" + adata.obs_names
-        lib_num,tp,geno,treat = run.split('_')
-        adata.obs["Treatment"] =treat[0]
-        adata.obs["Timepoint"] = tp
-        adata.obs["Genotype"] = geno
-        adata.obs["Library"] = adata.obs["Treatment"] + '_' + adata.obs["Genotype"]
-        adatas.append(adata.copy())
-    adata = anndata.concat(adatas)
-    adata.obs["Treatment"].replace({"H": "Hyperoxia", "N": "Normoxia"}, inplace=True)
-    adata.obs["Treatment"] = pd.Categorical(adata.obs['Treatment'],categories = ['Normoxia','Hyperoxia'])
-    adata.obs["Genotype"] = pd.Categorical(adata.obs['Genotype'],categories = ['WT','KO'])
-    print(adata.obs['Library'].unique())
-
-    adata.obs["Library"] = pd.Categorical(adata.obs['Library'],categories = ['N_WT','N_KO','H_WT','H_KO'])
-
-
-    adata.var['ambient_rna_est_contamination'] = pd.concat( {key: df['est'] for key, df in ambient_dict.items()}).groupby(level=1).mean()
-    adata.var['ambient_rna_total_counts'] = pd.concat({key: df['counts'] for key, df in ambient_dict.items()}).groupby(level=1).sum()
-    for key, df in ambient_dict.items():
-        adata.var[f'ambient_rna_est_contamination_{key}'] = df['est']
-        adata.var[f'ambient_rna_counts_{key}'] = df['counts']
-    for column in ["gene_name","gene_id", "gene_type", "seqname", "transcript_name", "protein_id"]:
-        temp_dict = pd.Series(gtf[column].values, index=gtf["gene_id"]).to_dict()
-        # temp_dict.update(pd.Series(gtf[column].values, index=gtf["gene_id"]).to_dict())
-        temp_dict = defaultdict(lambda: None, temp_dict)
-        adata.var[column] = [temp_dict[x] for x in adata.var.index]
-    adata.var_names = [gene_name_dict[x] for x in adata.var_names]
-    adata.var_names_make_unique()
-    adata.var["mt"] = [True if x == "chrM" else False for x in adata.var["seqname"]]
-    adata.var["ribo"] = adata.var_names.str.startswith(("Rps", "Rpl"))
-    adata.var["hb"] = adata.var_names.str.contains(("^Hb[^(p)]"))
+    # ## Here we are reading in cellranger outputs and concatentating together, adding some metadata for both cells in obs and genes in var
+    # runs = os.listdir(input_data)
+    # adatas = []
+    # gtf = read_gtf(gtf_fn).to_pandas()
+    # print(gtf.columns)
+    # gene_name_dict = pd.Series(gtf['gene_name'].values, index=gtf['gene_id']).to_dict()
+    # for x in gene_name_dict.keys():
+    #     if gene_name_dict[x] == '':
+    #         gene_name_dict[x] = x
+    # ambient_dict = {}
+    # for run in runs:
+    #     print(run)
+    #     folder = f"{input_data}/{run}"
+    #     ambient_df = pd.read_csv(f'{figures}/soupx/{run}_ambient_genes.txt', sep='\t', header=0, index_col=0)
+    #     ambient_dict[run] = ambient_df
+    #     adata = read_adata(folder)
+    #     adata2 = sc.read_10x_h5(f"data/single_cell_files/cellranger_output/{run}/outs/filtered_feature_bc_matrix.h5")
+    #     adata.layers['raw'] = adata2.X.copy()
+    #     adata.obs_names = run + "_" + adata.obs_names
+    #     lib_num,tp,geno,treat = run.split('_')
+    #     adata.obs["Treatment"] =treat[0]
+    #     adata.obs["Timepoint"] = tp
+    #     adata.obs["Genotype"] = geno
+    #     adata.obs["Library"] = adata.obs["Treatment"] + '_' + adata.obs["Genotype"]
+    #     adatas.append(adata.copy())
+    # adata = anndata.concat(adatas)
+    # adata.obs["Treatment"].replace({"H": "Hyperoxia", "N": "Normoxia"}, inplace=True)
+    # adata.obs["Treatment"] = pd.Categorical(adata.obs['Treatment'],categories = ['Normoxia','Hyperoxia'])
+    # adata.obs["Genotype"] = pd.Categorical(adata.obs['Genotype'],categories = ['WT','KO'])
+    # print(adata.obs['Library'].unique())
+    #
+    # adata.obs["Library"] = pd.Categorical(adata.obs['Library'],categories = ['N_WT','N_KO','H_WT','H_KO'])
+    #
+    #
+    # adata.var['ambient_rna_est_contamination'] = pd.concat( {key: df['est'] for key, df in ambient_dict.items()}).groupby(level=1).mean()
+    # adata.var['ambient_rna_total_counts'] = pd.concat({key: df['counts'] for key, df in ambient_dict.items()}).groupby(level=1).sum()
+    # for key, df in ambient_dict.items():
+    #     adata.var[f'ambient_rna_est_contamination_{key}'] = df['est']
+    #     adata.var[f'ambient_rna_counts_{key}'] = df['counts']
+    # for column in ["gene_name","gene_id", "gene_type", "seqname", "transcript_name", "protein_id"]:
+    #     temp_dict = pd.Series(gtf[column].values, index=gtf["gene_id"]).to_dict()
+    #     # temp_dict.update(pd.Series(gtf[column].values, index=gtf["gene_id"]).to_dict())
+    #     temp_dict = defaultdict(lambda: None, temp_dict)
+    #     adata.var[column] = [temp_dict[x] for x in adata.var.index]
+    # adata.var_names = [gene_name_dict[x] for x in adata.var_names]
+    # adata.var_names_make_unique()
+    # adata.var["mt"] = [True if x == "chrM" else False for x in adata.var["seqname"]]
+    # adata.var["ribo"] = adata.var_names.str.startswith(("Rps", "Rpl"))
+    # adata.var["hb"] = adata.var_names.str.contains(("^Hb[^(p)]"))
+    # print(adata)
+    # ## write out unfiltered object here
+    # adata.write(
+    #     f"{output_data}/{adata_name}_cellranger_all_cells.gz.h5ad", compression="gzip"
+    # )
+    # adata=sc.read(
+    #     f"{output_data}/{adata_name}_cellranger_all_cells.gz.h5ad")
+    # ## Run qc and make some qc graphs
+    # figures_qc = f"{figures}/qc"
+    # os.makedirs(figures_qc, exist_ok=True)
+    # sc.settings.figdir = figures_qc
+    #
+    # sc.pp.calculate_qc_metrics(
+    #     adata,
+    #     qc_vars=["mt", "ribo", "hb"],
+    #     expr_type="umis",
+    #     percent_top=[20],
+    #     log1p=True,
+    #     inplace=True,
+    # )
+    #
+    # sc.pl.scatter(
+    #     adata,
+    #     x="log1p_total_umis",
+    #     y="log1p_n_genes_by_umis",
+    #     show=False,
+    #     save="_genes_by_counts_pretrim_log",
+    # )
+    # sc.pl.highest_expr_genes(adata, n_top=20, show=False, save=f"_pretrim")
+    # sc.pl.violin(
+    #     adata,
+    #     ["log1p_total_umis"],
+    #     groupby="Library",
+    #     rotation=90,
+    #     show=False,
+    #     save="_umis_pretrim",
+    # )
+    # sc.pl.violin(
+    #     adata,
+    #     ["log1p_n_genes_by_umis"],
+    #     groupby="Library",
+    #     rotation=90,
+    #     show=False,
+    #     save="_genes_pretrim",
+    # )
+    # sc.pl.violin(
+    #     adata,
+    #     ["pct_umis_mt"],
+    #     groupby="Library",
+    #     rotation=90,
+    #     show=False,
+    #     save="_mt_pretrim",
+    # )
+    # # We are running scrublet here to detect any doublets on the raw count matrix
+    #
+    # sc.pp.scrublet(adata, batch_key="Library")
+    # sc.pl.scrublet_score_distribution(adata, show=False, save="scrublet_scores")
+    #
+    # adata.write(
+    #     f"{output_data}/{adata_name}_filtered_embed.gz.h5ad", compression="gzip"
+    # )
+    adata = sc.read(f"{output_data}/{adata_name}_filtered_embed.gz.h5ad")
+    # adata.X =  adata.layers["soupx"].copy()
     print(adata)
-    ## write out unfiltered object here
-    adata.write(
-        f"{output_data}/{adata_name}_cellranger_all_cells.gz.h5ad", compression="gzip"
-    )
-    adata=sc.read(
-        f"{output_data}/{adata_name}_cellranger_all_cells.gz.h5ad")
-    ## Run qc and make some qc graphs
-    figures_qc = f"{figures}/qc"
-    os.makedirs(figures_qc, exist_ok=True)
-    sc.settings.figdir = figures_qc
-
-    sc.pp.calculate_qc_metrics(
-        adata,
-        qc_vars=["mt", "ribo", "hb"],
-        expr_type="umis",
-        percent_top=[20],
-        log1p=True,
-        inplace=True,
-    )
-
-    sc.pl.scatter(
-        adata,
-        x="log1p_total_umis",
-        y="log1p_n_genes_by_umis",
-        show=False,
-        save="_genes_by_counts_pretrim_log",
-    )
-    sc.pl.highest_expr_genes(adata, n_top=20, show=False, save=f"_pretrim")
-    sc.pl.violin(
-        adata,
-        ["log1p_total_umis"],
-        groupby="Library",
-        rotation=90,
-        show=False,
-        save="_umis_pretrim",
-    )
-    sc.pl.violin(
-        adata,
-        ["log1p_n_genes_by_umis"],
-        groupby="Library",
-        rotation=90,
-        show=False,
-        save="_genes_pretrim",
-    )
-    sc.pl.violin(
-        adata,
-        ["pct_umis_mt"],
-        groupby="Library",
-        rotation=90,
-        show=False,
-        save="_mt_pretrim",
-    )
-    # We are running scrublet here to detect any doublets on the raw count matrix
-
-    sc.pp.scrublet(adata, batch_key="Library")
-    print(adata)
-    sc.pl.scrublet_score_distribution(adata, show=False, save="scrublet_scores")
-    # instead of filtering with thresholds we are filtering with outlier testing for three categories, level of UMI, level of unique genes, and pct of UMIs in highly expressed genes
+    #instead of filtering with thresholds we are filtering with outlier testing for three categories, level of UMI, level of unique genes, and pct of UMIs in highly expressed genes
     def is_outlier(adata, metric: str, nmads: int):
         M = adata.obs[metric]
         outlier = (M < np.median(M) - nmads * median_abs_deviation(M)) | (
@@ -334,10 +340,8 @@ if __name__ == "__main__":
     print(adata.obs.mt_outlier.value_counts())
     print(adata.obs.outlier.value_counts())
     print(adata.obs.predicted_doublet.value_counts())
-    adata = adata[(~adata.obs.outlier) &
-                  (~adata.obs.mt_outlier)
-                  # &
-                  # (~adata.obs.predicted_doublet)
+    adata = adata[((~adata.obs.outlier) &(~adata.obs.mt_outlier)
+                   &(~adata.obs.predicted_doublet) )
     ].copy()
     #filter out genes expressed in less than 10 cells, arbitrary
     sc.pp.filter_genes(adata, min_cells=10)
@@ -388,6 +392,22 @@ if __name__ == "__main__":
     # sce.pp.harmony_integrate(adata, 'Library',adjusted_basis='X_pca')
     sc.pp.neighbors(adata, use_rep="X_pca")
     sc.tl.leiden(adata, key_added="leiden", resolution=0.5)
+    sc.tl.rank_genes_groups(adata, groupby=f"leiden", method='wilcoxon', pts=True)
+    sc.tl.dendrogram(adata, f"leiden")
+    sc.pl.rank_genes_groups_dotplot(
+        adata,
+        groupby=f"leiden",
+        show=False,
+        save=f"leiden_markers.png",
+    )
+    with pd.ExcelWriter(
+            f"{figures}/leiden_markers.xlsx", engine="xlsxwriter"
+    ) as writer:
+        for ct in adata.obs[(f"leiden")].cat.categories:
+            df = sc.get.rank_genes_groups_df(adata, key="rank_genes_groups", group=ct)
+            df.set_index("names")
+            df["pct_difference"] = df["pct_nz_group"] - df["pct_nz_reference"]
+            df.to_excel(writer, sheet_name=f"{ct} v rest"[:31])
     sc.tl.umap(adata, min_dist=0.5)
     sc.tl.score_genes(adata, adata.var['ambient_rna_est_contamination'].sort_values(ascending=False).head(50).index,
                       score_name='ambient_score')
@@ -410,8 +430,8 @@ if __name__ == "__main__":
             lineage_dict[cluster] = 'Mesenchymal'
     mean_t.to_csv(f'{figures_embed}/lineage_scores.csv')
     adata.uns['leiden_lineage_expression'] = mean_t
-    adata.obs['Lineage'] = [lineage_dict[x] for x in adata.obs['leiden']]
-    # adata.obs["celltype_rough"] = [leiden_ct_dict[x] for x in adata.obs["leiden"]]
+    adata.obs['Lineage'] = ["Epithelial" if x=='24' else lineage_dict[x] for x in adata.obs['leiden']]
+    adata.obs["celltype_rough"] = [leiden_ct_dict[x] for x in adata.obs["leiden"]]
 
     ## make plots below that are helpful for initial analysis
     sc.pl.dotplot(
@@ -441,11 +461,17 @@ if __name__ == "__main__":
         "leiden",
         "doublet_score",
         "predicted_doublet",
-        # "celltype_rough",
         "ambient_score",
+        'celltype_rough',
         'Cdh5','Col1a1','Ptprc','Epcam','Muc1','Tbx2','Kit','Car4','Sftpc','Hopx'
     ]:
         sc.pl.umap(adata, color=color, show=False, save=f"_{color}.png")
     adata.write(
-        f"{output_data}/{adata_name}_filtered_embed_w_doublets.gz.h5ad", compression="gzip"
+        f"{output_data}/{adata_name}_filtered_embed.gz.h5ad", compression="gzip"
+    )
+    # adata = sc.read(f"{output_data}/{adata_name}_filtered_embed.gz.h5ad")
+    adata = adata[(~adata.obs["celltype_rough"].str.startswith('doublet')) & (
+        ~adata.obs["celltype_rough"].str.startswith('low-quality'))]
+    adata.write(
+        f"{output_data}/{adata_name}_filtered_embed_cleaned.gz.h5ad", compression="gzip"
     )
